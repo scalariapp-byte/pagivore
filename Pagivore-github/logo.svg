@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="fond" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2A2433"/>
+      <stop offset="1" stop-color="#141119"/>
+    </linearGradient>
+    <linearGradient id="papier" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FBF5EA"/>
+      <stop offset="1" stop-color="#EADFCB"/>
+    </linearGradient>
+    <mask id="croc">
+      <rect width="64" height="64" fill="#fff"/>
+      <circle cx="47.5" cy="24" r="4.6" fill="#000"/>
+      <circle cx="48.6" cy="31.6" r="4.4" fill="#000"/>
+      <circle cx="47.8" cy="39" r="3.9" fill="#000"/>
+    </mask>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#fond)"/>
+  <g transform="rotate(-7 32 32)">
+    <rect x="17" y="10" width="30" height="44" rx="3" fill="url(#papier)" mask="url(#croc)"/>
+    <path d="M22 26h15M22 32h16M22 38h14M22 44h10" stroke="#CDBFA6" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <path d="M23 10h8v13l-4-3-4 3z" fill="#FF5B4F"/>
+  </g>
+</svg>

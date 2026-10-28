@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pagivore</title>
+  <meta name="description" content="Organise ta collection de BD, mangas et comics, et trouve tes prochains tomes.">
+  <meta name="theme-color" content="#141119">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    try { const t = localStorage.getItem('bulles.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#" data-view-link="collection">
+        <svg class="logo" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="fond" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2A2433"/><stop offset="1" stop-color="#141119"/></linearGradient><linearGradient id="papier" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBF5EA"/><stop offset="1" stop-color="#EADFCB"/></linearGradient><mask id="croc"><rect width="64" height="64" fill="#fff"/><circle cx="47.5" cy="24" r="4.6" fill="#000"/><circle cx="48.6" cy="31.6" r="4.4" fill="#000"/><circle cx="47.8" cy="39" r="3.9" fill="#000"/></mask></defs><rect width="64" height="64" rx="15" fill="url(#fond)"/><g transform="rotate(-7 32 32)"><rect x="17" y="10" width="30" height="44" rx="3" fill="url(#papier)" mask="url(#croc)"/><path d="M22 26h15M22 32h16M22 38h14M22 44h10" stroke="#CDBFA6" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M23 10h8v13l-4-3-4 3z" fill="#FF5B4F"/></g></svg>
+        <span>Pagivore</span>
+      </a>
+      <button class="chrono-pill" id="chrono-pill" hidden title="Chrono de lecture en cours"></button>
+      <nav class="tabs" aria-label="Sections">
+        <button class="tab active" data-view="collection">Ma collection <span class="count" id="tab-count">0</span></button>
+        <button class="tab" data-view="search">Rechercher</button>
+        <button class="tab" data-view="suivi">Mon suivi</button>
+      </nav>
+      <button class="icon-btn" id="settings-btn" aria-label="Paramètres" title="Paramètres">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
+      <button class="icon-btn" id="theme-toggle" aria-label="Changer de thème" title="Changer de thème">
+        <svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Collection -->
+    <section id="view-collection" class="view active">
+      <div class="hero">
+        <div>
+          <h1>Ma collection</h1>
+          <p class="muted">Tes BD, mangas, comics et livres au même endroit, et le suivi de tes lectures.</p>
+        </div>
+        <div class="hero-actions">
+          <button class="btn ghost" id="btn-export">Exporter</button>
+          <label class="btn ghost">Importer<input type="file" id="file-import" accept="application/json,.json" hidden></label>
+          <button class="btn primary" id="btn-add-manual">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Ajouter à la main
+          </button>
+        </div>
+      </div>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="toolbar">
+        <div class="search-field">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="col-q" type="search" placeholder="Filtrer : titre, auteur, genre..." autocomplete="off">
+        </div>
+        <div class="chips" id="col-type">
+          <button class="chip active" data-type="">Tout</button>
+          <button class="chip" data-type="manga">Manga</button>
+          <button class="chip" data-type="bd">BD</button>
+          <button class="chip" data-type="comics">Comics</button>
+          <button class="chip" data-type="livre">Livres</button>
+          <button class="chip" data-type="ancien">Anciens</button>
+          <button class="chip" data-type="autre">Autre</button>
+        </div>
+        <div class="selects">
+          <button class="btn ghost" id="col-view" type="button">Vue étagère</button>
+          <select id="col-status" aria-label="Statut">
+            <option value="">Statut</option>
+            <option value="possede">Possédés</option>
+            <option value="envie">Envies</option>
+          </select>
+          <select id="col-reading" aria-label="Lecture">
+            <option value="">Lecture</option>
+            <option value="a-lire">À lire</option>
+            <option value="en-cours">En cours</option>
+            <option value="lu">Lu</option>
+          </select>
+          <select id="col-sort" aria-label="Trier">
+            <option value="added">Ajoutés</option>
+            <option value="title">A-Z</option>
+            <option value="rating">Notes</option>
+            <option value="year">Récents</option>
+            <option value="old">Anciens</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid" id="col-grid"></div>
+      <div class="empty" id="col-empty" hidden></div>
+    </section>
+
+    <!-- Recherche -->
+    <section id="view-suivi" class="view">
+      <div class="hero"><div><h1>Mon suivi</h1>
+        <p class="muted">Statistiques, tomes manquants, nouveautés et idées de lecture.</p></div></div>
+      <div id="suivi"></div>
+    </section>
+
+    <section id="view-search" class="view">
+      <form class="search-hero" id="search-form" autocomplete="off">
+        <div class="source-switch" hidden role="radiogroup" aria-label="Où chercher">
+          <button type="button" class="source active" data-source="manga" role="radio" aria-checked="true">
+            <strong>Mangas</strong><small>manga, manhwa, light novel</small>
+          </button>
+          <button type="button" class="source" data-source="bd" role="radio" aria-checked="false">
+            <strong>BD & comics</strong><small>titre, auteur ou ISBN</small>
+          </button>
+          <button type="button" class="source" data-source="livres" role="radio" aria-checked="false">
+            <strong>Livres</strong><small>romans, bouquins, anciens</small>
+          </button>
+        </div>
+
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="s-q" type="search" placeholder="Titre, auteur ou ISBN : livre, BD, manga...">
+          <button type="button" class="scan-btn" id="btn-scan" title="Scanner un code-barres" aria-label="Scanner un code-barres">
+            <svg viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 8v8M10 8v8M13 8v8M17 8v8"/></svg>
+          </button>
+          <button class="btn primary" type="submit">Rechercher</button>
+        </div>
+
+        <div class="filters" id="filters-manga" hidden>
+          <label>Format
+            <select id="f-format">
+              <option value="MANGA,ONE_SHOT" selected>Mangas seulement</option>
+              <option value="MANGA">Séries (sans one shot)</option>
+              <option value="ONE_SHOT">One shot</option>
+              <option value="NOVEL">Light novels (romans)</option>
+              <option value="">Tout (mangas + romans)</option>
+            </select>
+          </label>
+          <label>Origine
+            <select id="f-origin">
+              <option value="">Toutes</option>
+              <option value="JP">Japon (manga)</option>
+              <option value="KR">Corée (manhwa)</option>
+              <option value="CN">Chine (manhua)</option>
+            </select>
+          </label>
+          <label>Statut
+            <select id="f-status">
+              <option value="">Tous</option>
+              <option value="RELEASING">En cours</option>
+              <option value="FINISHED">Terminé</option>
+              <option value="HIATUS">En pause</option>
+            </select>
+          </label>
+          <label>Genre
+            <select id="f-genre"><option value="">Tous</option></select>
+          </label>
+          <label>Depuis
+            <select id="f-year"><option value="">Toutes années</option></select>
+          </label>
+          <label>Trier par
+            <select id="f-sort">
+              <option value="SEARCH_MATCH">Pertinence</option>
+              <option value="POPULARITY_DESC">Popularité</option>
+              <option value="SCORE_DESC">Meilleure note</option>
+              <option value="START_DATE_DESC">Plus récents</option>
+              <option value="TRENDING_DESC">Tendance</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="filters" id="filters-bd">
+          <label hidden>Catégorie
+            <select id="f-bd-cat">
+              <option value="">Tout</option>
+              <option value="bandes dessinées">BD</option>
+              <option value="comics">Comics</option>
+              <option value="manga">Manga</option>
+            </select>
+          </label>
+          <label>Langue
+            <select id="f-bd-lang">
+              <option value="fre">Français</option>
+              <option value="eng">Anglais</option>
+              <option value="">Toutes</option>
+            </select>
+          </label>
+          <label>Époque
+            <select id="f-bd-era">
+              <option value="">Toutes</option>
+              <option value="-1900">Avant 1900</option>
+              <option value="1900-1950">1900 - 1950</option>
+              <option value="1950-1980">1950 - 1980</option>
+              <option value="1980-">Après 1980</option>
+            </select>
+          </label>
+          <label>Parution après
+            <input id="f-bd-from" type="number" min="1900" max="2100" placeholder="ex. 1990">
+          </label>
+          <label>Avant
+            <input id="f-bd-to" type="number" min="1900" max="2100" placeholder="ex. 2026">
+          </label>
+          <label>Trier par
+            <select id="f-bd-sort">
+              <option value="">Pertinence</option>
+              <option value="new">Plus récents</option>
+              <option value="old">Plus anciens</option>
+            </select>
+          </label>
+        </div>
+
+        <p class="search-hint">
+          <span id="source-note">Le type (livre, BD, manga, comics) est reconnu tout seul.</span>
+          <a id="amazon-direct" href="https://www.amazon.fr/" target="_blank" rel="noopener">Chercher directement sur Amazon
+            <svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+        </p>
+      </form>
+
+      <div class="results-head" id="results-head"></div>
+      <div class="grid results" id="results"></div>
+      <div class="more"><button class="btn ghost" id="btn-more" hidden>Voir plus de résultats</button></div>
+    </section>
+  </main>
+
+  <dialog id="modal"><div class="modal-body" id="modal-body"></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
